@@ -40,7 +40,7 @@ class ItemRepositoryTest {
             Item item = new Item();
             item.setItemNm("테스트 상품" + i);
             item.setPrice(10000 + i);
-            item.setItemDetail("테스트 상품 상세 설명" + i);
+            item.setItemDetail("테스트 상품 상세설명" + i);
             item.setItemSellStatus(ItemSellStatus.SELL);
             item.setStockNumber(100);
             item.setRegTime(LocalDateTime.now());
@@ -55,6 +55,39 @@ class ItemRepositoryTest {
         this.createItemList();
         List<Item> itemList = itemRepository.findByItemNm("테스트 상품1");
         for (Item item: itemList) {
+            System.out.println(item.toString());
+        }
+    }
+
+    @Test
+    @DisplayName("싱품명, 상품상세설명 or 테스트")
+    public void findByItemNmOrItemDetailTest() {
+        this.createItemList();
+        List<Item> itemList =
+                itemRepository.findByItemNmOrItemDetail("테스트 상품1","테스트 상품 상세설명9");
+        for (Item item : itemList) {
+            System.out.println(item.toString());
+        }
+    }
+
+    @Test
+    @DisplayName("가격 LessThan 테스트")
+    public void findByPirceLessThanTest() {
+        this.createItemList();
+        List<Item> itemList = itemRepository.findByPriceLessThan(10003);
+        for (Item item : itemList) {
+            System.out.println(item.toString());
+        }
+    }
+
+    @Test
+    @DisplayName("가격 내림차순 조회 테스트")
+    public void findByPriceLessThanOrderByPriceDesc() {
+        this.createItemList();
+        List<Item> itemList =
+                itemRepository.findByPriceLessThanOrderByPriceDesc(10006);
+
+        for (Item item : itemList) {
             System.out.println(item.toString());
         }
     }
