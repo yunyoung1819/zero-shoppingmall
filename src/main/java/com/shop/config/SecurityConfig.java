@@ -14,28 +14,33 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class SecurityConfig {
 
+
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(authorizeHttpRequestsCustomizer -> authorizeHttpRequestsCustomizer
-                .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
-                .requestMatchers("/", "/members/**", "/item/**", "/images/**").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest()
-                .authenticated()
-        ).formLogin(formLoginCustomizer -> formLoginCustomizer
-                .loginPage("/members/login")
-                .defaultSuccessUrl("/")
-                .usernameParameter("email")
-                .failureUrl("/members/login/error")
-                .failureHandler(new CustomAuthenticationFailureHandler())
-        ).logout(logoutCustomizer -> logoutCustomizer
-                .logoutRequestMatcher(new AntPathRequestMatcher("/members/logout"))
-                .logoutSuccessUrl("/")
-        ).build();
+                        .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
+                        .requestMatchers("/", "/members/**", "/item/**", "/images/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .anyRequest()
+                        .authenticated()
+                ).formLogin(formLoginCustomizer -> formLoginCustomizer
+                        .loginPage("/members/login")
+                        .defaultSuccessUrl("/")
+                        .usernameParameter("email")
+                        .failureUrl("/members/login/error")
+                        .failureHandler(new CustomAuthenticationFailureHandler())
+                ).logout( logoutCustomizer -> logoutCustomizer
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/members/logout"))
+                        .logoutSuccessUrl("/")
+
+                )
+                .build();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 }
