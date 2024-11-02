@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class Item {
+public class Item extends BaseEntity {
 
     @Id
     @Column(name="item_id")
@@ -46,7 +46,4 @@ public class Item {
 //    )
 //    private List<Member> member;
 
-    private LocalDateTime regTime;         // 등록 시간
-
-    private LocalDateTime updateTime;       // 수정 시간
 }
