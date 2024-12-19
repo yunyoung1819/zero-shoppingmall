@@ -1,6 +1,7 @@
 package com.shop.service;
 
 import com.shop.constant.ItemSellStatus;
+import com.shop.constant.OrderStatus;
 import com.shop.dto.OrderDto;
 import com.shop.entity.Item;
 import com.shop.entity.Member;
@@ -40,9 +41,9 @@ public class OrderServiceTest {
 
     public Item saveItem() {
         Item item = new Item();
-        item.setItemNm("맥북 프로");
-        item.setPrice(100000);
-        item.setItemDetail("맥북 프로 14인치");
+        item.setItemNm("MacBook Pro");
+        item.setPrice(2500000);
+        item.setItemDetail("MacBook Pro 14 inch");
         item.setItemSellStatus(ItemSellStatus.SELL);
         item.setStockNumber(100);
         return itemRepository.save(item);
@@ -50,6 +51,7 @@ public class OrderServiceTest {
 
     public Member saveMember() {
         Member member = new Member();
+        member.setName("김민지");
         member.setEmail("test@test.com");
         return memberRepository.save(member);
     }
@@ -74,5 +76,24 @@ public class OrderServiceTest {
         int totalPrice = orderDto.getCount() * item.getPrice();
 
         assertEquals(totalPrice, order.getTotalPrice());
+    }
+
+    @Test
+    @DisplayName("주문 취소 테스트")
+    public void cancelOrder() {
+        Item item = saveItem();
+        Member member = saveMember();
+
+        OrderDto orderDto = new OrderDto();
+        orderDto.setCount(10);
+        orderDto.setItemId(item.getId());
+        Long orderId = orderService.order(orderDto, member.getEmail());
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(EntityNotFoundException::new);
+        orderService.cancelOrder(orderId);
+
+        assertEquals(OrderStatus.CANCEL, order.getOrderStatus());
+        assertEquals(100, item.getStockNumber());
     }
 }
