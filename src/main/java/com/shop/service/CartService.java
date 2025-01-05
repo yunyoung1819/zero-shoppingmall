@@ -1,5 +1,6 @@
 package com.shop.service;
 
+import com.shop.dto.CartDetailDto;
 import com.shop.dto.CartItemDto;
 import com.shop.entity.Cart;
 import com.shop.entity.CartItem;
@@ -10,9 +11,13 @@ import com.shop.repository.CartRepository;
 import com.shop.repository.ItemRepository;
 import com.shop.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -47,4 +52,26 @@ public class CartService {
             return cartItem.getId();
         }
     }
+
+    /**
+     * 현재 로그인한 회원의 정보를 이용하여 장바구니에 들어있는 상품을 조회
+     * @param email
+     * @return
+     */
+    @Transactional(readOnly = true)
+    public List<CartDetailDto> getCartList(String email) {
+
+        List<CartDetailDto> cartDetailDtoList = new ArrayList<>();
+
+        Member member = memberRepository.findByEmail(email);
+        Cart cart = cartRepository.findByMemberId(member.getId());
+        if (cart == null) {
+            return cartDetailDtoList;
+        }
+
+        cartDetailDtoList = cartItemRepository.findCartDetailDtoList(cart.getId());
+
+        return cartDetailDtoList;
+    }
+
 }
